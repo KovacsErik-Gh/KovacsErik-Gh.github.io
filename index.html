@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Erik Kovács — Automation &amp; Computer Science</title>
+<meta name="description" content="Erik Kovács is a 4th-year Automation and Computer Science student at the Technical University of Cluj-Napoca, working across computer vision, control systems and full-stack software.">
+<meta name="author" content="Erik Kovács">
+<meta name="theme-color" content="#0d0f0e">
+<meta property="og:type" content="profile">
+<meta property="og:title" content="Erik Kovács — Automation &amp; Computer Science">
+<meta property="og:description" content="Software that sees, decides and automates. Computer vision, control systems and full-stack projects.">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Runs before first paint: restores the theme and arms reveal animations.
+     The timeout keeps content visible if main.js ever fails to load. */
+  (function () {
+    var root = document.documentElement;
+    try { var t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+    root.classList.add('js');
+    setTimeout(function () { if (!window.__siteReady) root.classList.remove('js'); }, 3000);
+  })();
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Erik Kovács",
+  "email": "mailto:kovacs.erik171004@gmail.com",
+  "address": { "@type": "PostalAddress", "addressLocality": "Zalău", "addressCountry": "RO" },
+  "alumniOf": { "@type": "CollegeOrUniversity", "name": "Technical University of Cluj-Napoca" },
+  "sameAs": ["https://github.com/KovacsErik-Gh", "https://www.linkedin.com/in/kovacs-erik-598691397"],
+  "knowsAbout": ["Computer Vision", "Deep Learning", "Control Systems", "Process Automation", "Full-Stack Development"]
+}
+</script>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress" aria-hidden="true"><span id="progress"></span></div>
+
+<header class="nav" id="nav">
+  <a class="nav__mark" href="#top" aria-label="Erik Kovács, back to top">EK<i></i></a>
+  <nav class="nav__links" id="navLinks" aria-label="Main">
+    <a href="#about">About</a>
+    <a href="#experience">Experience</a>
+    <a href="#projects">Projects</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <div class="nav__tools">
+    <button class="icon-btn" id="theme" type="button" aria-label="Switch colour theme">
+      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="12" cy="12" r="8.500" fill="none" stroke="currentColor" stroke-width="1.700"/><path d="M12 3.500a8.500 8.500 0 0 1 0 17z" fill="currentColor"/></svg>
+    </button>
+    <a class="btn btn--small" href="assets/Erik-Kovacs-CV.pdf" target="_blank" rel="noopener">CV <span aria-hidden="true">↗</span></a>
+    <button class="icon-btn nav__burger" id="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navLinks">
+      <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M3 8h18M3 16h18" stroke="currentColor" stroke-width="1.700" fill="none"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="main">
+  <!-- ─────────── HERO ─────────── -->
+  <section class="hero" id="top">
+    <h1 class="hero__name" aria-label="Erik Kovács"><span data-split aria-hidden="true">Erik Kovács</span></h1>
+
+    <div class="hero__grid">
+      <div class="hero__intro">
+        <p class="status" data-reveal><i></i> Open to opportunities</p>
+        <p class="hero__lead" data-reveal style="--d:.08s">I study automation and computer science, and I build software that <em>sees</em>, <em>decides</em> and <em>automates</em>, from computer vision models to the internal apps people use at work.</p>
+        <p class="hero__meta" data-reveal style="--d:.16s">Technical University of Cluj-Napoca<br>Zalău, Romania · Graduating 2027</p>
+        <div class="hero__cta" data-reveal style="--d:.24s">
+          <a class="btn btn--primary" href="#projects">See my projects <span aria-hidden="true">↓</span></a>
+          <a class="btn" href="#contact">Get in touch</a>
+        </div>
+      </div>
+
+      <figure class="sim" data-reveal style="--d:.2s">
+        <figcaption class="panel-head">
+          <span>Adaptive cruise control · decision logic</span>
+          <span class="live"><i></i> Live simulation</span>
+        </figcaption>
+        <div class="sim__body">
+          <div class="sim__stage">
+            <canvas id="simCanvas" role="img" aria-label="Animated road scene in segmentation colours. A simulated car adjusts its speed to the vehicle ahead, the weather and traffic lights."></canvas>
+            <div class="sim__hud" aria-hidden="true">
+              <small>Lead vehicle area ratio: <b id="simRatio">0.000</b></small>
+              <strong id="simAction">CRUISING</strong>
+              <small><span id="simWeather">Sunny</span> · Recommended: <b id="simSpeed">50</b> km/h</small>
+            </div>
+          </div>
+          <ol class="ladder" id="simLadder" aria-label="Decision priorities, highest first">
+            <li data-level="1"><b>Emergency stop</b><span>ratio &gt; 0.15</span></li>
+            <li data-level="2"><b>Braking</b><span>0.08 – 0.15</span></li>
+            <li data-level="3"><b>Traffic signs</b><span>stop / red light</span></li>
+            <li data-level="4"><b>Weather</b><span>speed multiplier</span></li>
+            <li data-level="5"><b>Cruise</b><span>50 km/h baseline</span></li>
+          </ol>
+        </div>
+        <div class="sim__controls">
+          <span class="sim__try">Try it</span>
+          <button type="button" class="chip-btn" id="simCut">Cut-in</button>
+          <button type="button" class="chip-btn" id="simRed">Red light</button>
+          <button type="button" class="chip-btn" id="simWx">Change weather</button>
+        </div>
+      </figure>
+    </div>
+    <p class="sim__note" data-reveal style="--d:.3s">Thresholds and speed limits come from my project's real rule table. The scene is simulated in your browser. <a href="#acc">See the real model output</a></p>
+  </section>
+
+  <!-- ─────────── ABOUT ─────────── -->
+  <section class="section" id="about">
+    <p class="eyebrow" data-reveal>About</p>
+    <div class="about">
+      <div>
+        <p class="statement" data-reveal>I enjoy turning real problems into working software, whether that means training a vision model, tuning a controller, or sitting down with users to find out what they need.</p>
+        <p class="body" data-reveal style="--d:.08s">I'm a 4th-year student at the Faculty of Automation and Computer Science in Cluj-Napoca. That background gives me two habits: thinking in systems, with inputs, feedback and failure modes, and caring whether a thing actually works outside the notebook. This summer I took that into industry at Tenaris Silcotub. Next, I want to keep learning alongside experienced engineers on real-world projects.</p>
+      </div>
+      <dl class="facts" data-reveal style="--d:.12s">
+        <div><dt>Studying</dt><dd>BSc, Automation &amp; Computer Science, UTCN</dd></div>
+        <div><dt>Graduating</dt><dd>2027 (expected)</dd></div>
+        <div><dt>Based in</dt><dd>Zalău, Sălaj, Romania</dd></div>
+        <div><dt>Interested in</dt><dd>Computer vision, control systems, process automation, full-stack software</dd></div>
+      </dl>
+    </div>
+    <ul class="stats">
+      <li data-reveal><b data-count="90.71" data-suffix="%" data-decimals="2">90.71%</b><span>pixel accuracy across 12 segmentation classes</span></li>
+      <li data-reveal style="--d:.06s"><b data-count="10" data-suffix=" wks">10 wks</b><span>building internal apps at Tenaris Silcotub</span></li>
+      <li data-reveal style="--d:.12s"><b data-count="4">4</b><span>roles in the team-built GymTech platform</span></li>
+      <li data-reveal style="--d:.18s"><b data-count="4">4</b><span>languages, from native Hungarian to A2 German</span></li>
+    </ul>
+  </section>
+
+  <!-- ─────────── EXPERIENCE ─────────── -->
+  <section class="section" id="experience">
+    <p class="eyebrow" data-reveal>Experience</p>
+    <article class="job">
+      <header class="job__head" data-reveal>
+        <div>
+          <h2>App Developer Intern</h2>
+          <p class="job__org">Tenaris Silcotub, Zalău</p>
+        </div>
+        <p class="job__date">Jul 13 – Sep 18, 2026<br><span>10 weeks</span></p>
+      </header>
+      <ol class="flow" data-reveal aria-label="How the work fitted together">
+        <li><span>Input</span><b>User requirements</b></li>
+        <li><span>Build</span><b>Power Apps</b></li>
+        <li><span>Automate</span><b>Power Automate</b></li>
+        <li><span>Store</span><b>SharePoint</b></li>
+      </ol>
+      <ul class="job__list" data-reveal>
+        <li>Built internal business applications in Microsoft Power Apps, translating end-user requirements into working solutions.</li>
+        <li>Automated workflows and approval processes with Power Automate.</li>
+        <li>Managed and integrated company data and documents in SharePoint.</li>
+        <li>Completed project management training with Ascendis and applied it to planning and delivering my tasks.</li>
+      </ul>
+    </article>
+  </section>
+
+  <!-- ─────────── PROJECTS ─────────── -->
+  <section class="section" id="projects">
+    <p class="eyebrow" data-reveal>Selected projects</p>
+
+    <!-- 01 ACC -->
+    <article class="project" id="acc">
+      <div class="project__copy" data-reveal>
+        <p class="project__no">01 · Computer vision</p>
+        <h2>Adaptive Cruise Control with Computer Vision</h2>
+        <p>An autonomous navigation system that reads a road scene and picks a safe speed. FCN-ResNet50 labels every pixel, YOLOv8 finds vehicles, signs and pedestrians, and a safety-first hierarchy turns both into a decision, all optimized to run on CPU alone.</p>
+        <dl class="metrics">
+          <div><dt>Pixel accuracy</dt><dd>90.71%</dd></div>
+          <div><dt>Scene classes</dt><dd>12</dd></div>
+          <div><dt>Runs on</dt><dd>CPU only</dd></div>
+        </dl>
+        <ul class="tags"><li>Python</li><li>PyTorch</li><li>YOLOv8</li><li>OpenCV</li><li>CARLA dataset</li></ul>
+        <p class="next"><b>Next</b> Train longer (the model saw only 2 epochs) at higher resolution to lift the 48.99% mean IoU, then add depth estimation for real distances.</p>
+        <a class="link" href="https://github.com/KovacsErik-Gh/autonomous-driving-vision-system" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="panel" data-reveal style="--d:.1s">
+        <figcaption class="panel-head"><span>Real model output</span>
+          <span class="tabs" role="group" aria-label="Choose an output frame">
+            <button type="button" class="tab is-on" aria-pressed="true" data-frame="0">Cruising</button>
+            <button type="button" class="tab" aria-pressed="false" data-frame="1">Braking</button>
+            <button type="button" class="tab" aria-pressed="false" data-frame="2">Segmentation</button>
+          </span>
+        </figcaption>
+        <div class="frames" id="frames">
+          <img class="is-on" src="assets/img/acc-cruising.jpg" width="713" height="432" loading="lazy" alt="Detection output on a CARLA road scene. Cars and a cyclist are boxed, area ratio 0.041, action Cruising at a recommended 50 km/h in sunny weather.">
+          <img src="assets/img/acc-braking.jpg" width="712" height="430" loading="lazy" alt="Detection output with a vehicle close ahead. Area ratio 0.109, action Braking at a recommended 22 km/h in cloudy weather.">
+          <img src="assets/img/acc-segmentation.jpg" width="859" height="507" loading="lazy" alt="Three rows comparing the input image, the ground truth mask and the predicted segmentation mask for road scenes.">
+        </div>
+      </figure>
+    </article>
+
+    <!-- 02 GymTech -->
+    <article class="project project--flip">
+      <div class="project__copy" data-reveal>
+        <p class="project__no">02 · Full-stack · Team project · My role: full-stack developer</p>
+        <h2>GymTech</h2>
+        <p>A gym management platform built by a team, where I worked as a full-stack developer across both the ASP.NET Core Web API and the Angular frontend. It covers subscriptions, payments, attendance check-ins and trainer assignment, with each role seeing only what it should. xUnit, Vitest and Playwright test suites back it up.</p>
+        <ul class="tags"><li>C#</li><li>ASP.NET Core 8</li><li>EF Core</li><li>Angular</li><li>SQL Server</li></ul>
+        <p class="next"><b>Next</b> Deploy a live demo with seeded accounts so each role can be tried without setup.</p>
+        <a class="link" href="https://github.com/KovacsErik-Gh/GymTech" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="panel" data-reveal style="--d:.1s">
+        <figcaption class="panel-head"><span>Role-based access</span>
+          <span class="tabs" id="roleTabs" role="group" aria-label="Choose a role"></span>
+        </figcaption>
+        <ul class="perms" id="perms"></ul>
+      </figure>
+    </article>
+
+    <!-- 03 Flag -->
+    <article class="project">
+      <div class="project__copy" data-reveal>
+        <p class="project__no">03 · Web application</p>
+        <h2>Guess the Flag</h2>
+        <p>A full-stack quiz covering 195 countries, built with a decoupled architecture: a FastAPI backend and an Express/EJS frontend. It has JWT authentication with bcrypt password hashing, and a SQLite-backed global leaderboard with per-user score history.</p>
+        <ul class="tags"><li>Python</li><li>FastAPI</li><li>Node.js</li><li>Express</li><li>SQLite</li></ul>
+        <p class="next"><b>Next</b> Host it online and translate the README so anyone can play and read it.</p>
+        <a class="link" href="https://github.com/KovacsErik-Gh/Flag-Game" target="_blank" rel="noopener">View on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+      <figure class="panel" data-reveal style="--d:.1s">
+        <figcaption class="panel-head"><span>Quick round, right here</span><span class="score" id="flagScore" aria-live="polite">0 / 0</span></figcaption>
+        <div class="quiz">
+          <div class="quiz__flag" id="flag" role="img" aria-label="Flag to identify"></div>
+          <div class="quiz__options" id="flagOptions"></div>
+        </div>
+        <p class="panel-note">A small taste with simple striped flags. The full game has all 195 countries.</p>
+      </figure>
+    </article>
+
+    <!-- 04 PID -->
+    <article class="project project--flip">
+      <div class="project__copy" data-reveal>
+        <p class="project__no">04 · Control systems</p>
+        <h2>DC Motor PID Controller</h2>
+        <p>I modeled DC motor dynamics in MATLAB/Simulink, performed system identification, then designed a PID controller tuned with the Ziegler-Nichols method.</p>
+        <dl class="metrics">
+          <div><dt>Overshoot</dt><dd>2%</dd></div>
+          <div><dt>Settling time</dt><dd>0.5 s</dd></div>
+        </dl>
+        <ul class="tags"><li>MATLAB</li><li>Simulink</li><li>System identification</li></ul>
+        <p class="next"><b>Next</b> Test the controller on hardware, with saturation limits and noise.</p>
+      </div>
+      <figure class="panel" data-reveal style="--d:.1s">
+        <figcaption class="panel-head"><span>Tune it yourself</span>
+          <span class="tabs" role="group" aria-label="PID presets">
+            <button type="button" class="tab is-on" aria-pressed="true" data-pid="200,200,10">Balanced</button>
+            <button type="button" class="tab" aria-pressed="false" data-pid="100,0,0">P only</button>
+            <button type="button" class="tab" aria-pressed="false" data-pid="300,300,8">Aggressive</button>
+          </span>
+        </figcaption>
+        <div class="pid">
+          <canvas id="pidCanvas" role="img" aria-label="Step response of a DC motor under the selected PID gains"></canvas>
+          <dl class="pid__out" aria-live="polite">
+            <div><dt>Overshoot</dt><dd id="pidOs">–</dd></div>
+            <div><dt>Settling (±2%)</dt><dd id="pidTs">–</dd></div>
+            <div><dt>Steady-state error</dt><dd id="pidSs">–</dd></div>
+          </dl>
+          <div class="pid__sliders">
+            <label><span><span>K<sub>p</sub></span><output id="kpOut">200</output></span><input id="kp" type="range" min="0" max="500" step="5" value="200"></label>
+            <label><span><span>K<sub>i</sub></span><output id="kiOut">200</output></span><input id="ki" type="range" min="0" max="600" step="5" value="200"></label>
+            <label><span><span>K<sub>d</sub></span><output id="kdOut">10</output></span><input id="kd" type="range" min="0" max="40" step="1" value="10"></label>
+          </div>
+        </div>
+        <p class="panel-note">A browser simulation with textbook motor parameters, so these numbers won't match my Simulink model, whose results are on the left.</p>
+      </figure>
+    </article>
+
+    <a class="more" href="https://github.com/KovacsErik-Gh" target="_blank" rel="noopener" data-reveal>All my code on GitHub <span aria-hidden="true">↗</span></a>
+  </section>
+
+  <!-- ─────────── SKILLS ─────────── -->
+  <section class="section" id="skills">
+    <p class="eyebrow" data-reveal>Skills</p>
+    <div class="skills">
+      <div data-reveal><h3>Languages</h3><ul class="tags"><li>Python</li><li>C#</li><li>Java</li><li>C/C++</li><li>SQL</li><li>TypeScript</li><li>MATLAB</li></ul></div>
+      <div data-reveal style="--d:.05s"><h3>Frameworks &amp; libraries</h3><ul class="tags"><li>ASP.NET Core</li><li>EF Core</li><li>Angular</li><li>FastAPI</li><li>Node.js/Express</li><li>xUnit</li><li>PyTorch</li><li>OpenCV</li><li>YOLOv8</li><li>NumPy</li><li>Pandas</li></ul></div>
+      <div data-reveal style="--d:.1s"><h3>Low-code / Microsoft 365</h3><ul class="tags"><li>Power Apps</li><li>Power Automate</li><li>SharePoint</li></ul></div>
+      <div data-reveal style="--d:.15s"><h3>Tools &amp; platforms</h3><ul class="tags"><li>Git/GitHub</li><li>Jupyter Notebook</li><li>Anaconda</li><li>AutoCAD</li><li>Simulink</li></ul></div>
+      <div data-reveal style="--d:.2s"><h3>Core concepts</h3><ul class="tags"><li>Deep Learning</li><li>Semantic Segmentation</li><li>Object Detection</li><li>Control Systems</li><li>Process Automation</li><li>Project Management</li></ul></div>
+      <div data-reveal style="--d:.25s"><h3>Working style</h3><ul class="tags"><li>Analytical Thinking</li><li>Teamwork</li><li>Communication</li><li>Problem Solving</li><li>Time Management</li><li>Adaptability</li></ul></div>
+    </div>
+
+    <div class="creds">
+      <div data-reveal>
+        <h3>Education</h3>
+        <ul class="rows">
+          <li><div><b>Technical University of Cluj-Napoca</b><span>BSc, Faculty of Automation and Computer Science</span></div><time>2023 – 2027</time></li>
+          <li><div><b>Silvania National College, Zalău</b><span>Baccalaureate Diploma</span></div></li>
+        </ul>
+        <h3 class="creds__sub">Training</h3>
+        <ul class="rows">
+          <li><div><b>Project Management Training</b><span>Ascendis, Certificate of Completion</span></div><time>2026</time></li>
+        </ul>
+      </div>
+      <div data-reveal style="--d:.08s">
+        <h3>Languages</h3>
+        <ul class="langs">
+          <li><b>Hungarian</b><span class="cefr" data-level="6" role="img" aria-label="Native"></span><em>Native</em></li>
+          <li><b>Romanian</b><span class="cefr" data-level="5" role="img" aria-label="C1"></span><em>C1</em></li>
+          <li><b>English</b><span class="cefr" data-level="5" role="img" aria-label="C1"></span><em>C1</em></li>
+          <li><b>German</b><span class="cefr" data-level="2" role="img" aria-label="A2"></span><em>A2</em></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── CONTACT ─────────── -->
+  <section class="contact" id="contact">
+    <p class="eyebrow" data-reveal>Contact</p>
+    <h2 class="contact__title" data-reveal>Have a team I could learn from? Let's talk.</h2>
+    <div class="contact__mail" data-reveal>
+      <a href="mailto:kovacs.erik171004@gmail.com">kovacs.erik171004@gmail.com</a>
+      <button class="chip-btn" id="copyMail" type="button" data-mail="kovacs.erik171004@gmail.com">Copy</button>
+    </div>
+    <p class="contact__phone" data-reveal><a href="tel:+40754931342">+40 754 931 342</a><span>Zalău, Romania</span></p>
+    <ul class="contact__links" data-reveal>
+      <li><a href="https://www.linkedin.com/in/kovacs-erik-598691397" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+      <li><a href="https://github.com/KovacsErik-Gh" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+      <li><a href="assets/Erik-Kovacs-CV.pdf" target="_blank" rel="noopener">Download CV <span aria-hidden="true">↗</span></a></li>
+    </ul>
+  </section>
+</main>
+
+<footer class="footer">
+  <span>© <span id="year">2026</span> Erik Kovács</span>
+  <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
+</footer>
+
+<script src="main.js"></script>
+</body>
+</html>
