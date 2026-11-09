@@ -495,6 +495,122 @@
     setTimeout(() => { copy.textContent = 'Copy'; }, 1800);
   });
 
+  /* ─── Contact form ───
+     Messages are posted to Web3Forms, which emails them to CONTACT.email.
+     Paste your access key below (it is meant to be public, so it is safe in the page).
+     Until then the form falls back to opening the visitor's own email app. */
+  const CONTACT = {
+    endpoint: 'https://api.web3forms.com/submit',
+    accessKey: 'eadfb48b-155c-4143-b172-a9c38676e2d3', // Web3Forms access key (public by design; mirrors FORM_ACCESS_KEY in .env)
+    email: 'kovacs.erik171004@gmail.com',
+  };
+  (function contactForm() {
+    const form = $('#contactForm'), status = $('#cStatus'), send = $('#cSend');
+    const f = { email: $('#cEmail'), msg: $('#cMsg') };
+    const errs = { email: $('#cEmailErr'), msg: $('#cMsgErr') };
+    const count = $('#cCount'), MAX = 1500, KEY = 'contactDraft';
+    const loadedAt = Date.now();
+
+    const store = {
+      get() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } },
+      set(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) { /* private mode */ } },
+      clear() { try { localStorage.removeItem(KEY); } catch (e) { /* private mode */ } },
+    };
+    const updateCount = () => { count.textContent = `${f.msg.value.length} / ${MAX}`; count.classList.toggle('is-near', f.msg.value.length > MAX * .9); };
+
+    const draft = store.get();
+    if (draft.email) f.email.value = draft.email;
+    if (draft.msg) f.msg.value = draft.msg;
+    updateCount();
+    form.addEventListener('input', (e) => {
+      updateCount(); store.set({ email: f.email.value, msg: f.msg.value });
+      if (e.target.getAttribute('aria-invalid')) validate(e.target);
+    });
+
+    function setErr(key, el, text) {
+      errs[key].textContent = text;
+      if (text) el.setAttribute('aria-invalid', 'true'); else el.removeAttribute('aria-invalid');
+      return !text;
+    }
+    const checks = {
+      email: () => setErr('email', f.email, /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email.value.trim()) ? '' : 'Please enter a valid email so I can reply.'),
+      msg: () => setErr('msg', f.msg, f.msg.value.trim().length < 10 ? 'Please write at least a short message (10+ characters).' : ''),
+    };
+    const validate = (el) => (el === f.email ? checks.email() : el === f.msg ? checks.msg() : true);
+    const showStatus = (html, tone) => { status.innerHTML = html; status.dataset.tone = tone || 'error'; status.hidden = false; };
+    const mailError = `Or write to me directly at <a href="mailto:${CONTACT.email}">${CONTACT.email}</a>.`;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      status.hidden = true;
+      const ok = [checks.email(), checks.msg()];
+      if (ok.includes(false)) { form.querySelector('[aria-invalid="true"]').focus(); return; }
+
+      const email = f.email.value.trim(), message = f.msg.value.trim();
+      const domain = email.split('@')[1];
+      const subject = `Message from ${domain} via your portfolio`;
+
+      // Bots: honeypot filled, or submitted faster than a person could type.
+      if (form.botcheck.checked || Date.now() - loadedAt < 2500) { return finish(); }
+
+      if (!CONTACT.accessKey) {
+        showStatus('The form isn\'t connected yet, so your email app should open with the message ready to send.', 'info');
+        location.href = `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message + '\n\nReply to: ' + email)}`;
+        return;
+      }
+
+      send.disabled = true; send.classList.add('is-loading');
+      const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), 15000);
+      try {
+        const res = await fetch(CONTACT.endpoint, {
+          method: 'POST', signal: ctl.signal,
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify({ access_key: CONTACT.accessKey, subject, from_name: 'Portfolio website', name: email, email, message, botcheck: '' }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok || !data.success) throw new Error(data.message || 'Request failed');
+        finish();
+      } catch (err) {
+        showStatus(`Sorry, your message couldn't be sent${err.name === 'AbortError' ? ' (the request timed out)' : ''}. Your text is still here, so you can try again. ${mailError}`);
+      } finally {
+        clearTimeout(timer); send.disabled = false; send.classList.remove('is-loading');
+      }
+    });
+
+    function clearForm() {
+      form.reset(); updateCount();
+      Object.values(f).forEach((el) => el.removeAttribute('aria-invalid'));
+      Object.values(errs).forEach((p) => { p.textContent = ''; });
+      status.hidden = true;
+    }
+
+    const toast = $('#toast');
+    let toastTimer;
+    function hideToast() {
+      clearTimeout(toastTimer);
+      if (toast.hidden) return;
+      toast.classList.add('is-out');
+      setTimeout(() => { toast.hidden = true; toast.classList.remove('is-out'); }, reduced ? 0 : 350);
+    }
+    function showToast() {
+      clearTimeout(toastTimer);
+      toast.classList.remove('is-out');
+      toast.hidden = false;
+      // Restart the entrance and countdown animations if it was already open.
+      toast.style.animation = 'none'; void toast.offsetWidth; toast.style.animation = '';
+      const arm = () => { toastTimer = setTimeout(hideToast, 6000); };
+      arm();
+      toast.onmouseenter = () => clearTimeout(toastTimer);
+      toast.onmouseleave = arm;
+    }
+    $('#toastClose').addEventListener('click', hideToast);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') hideToast(); });
+
+    function finish() {
+      store.clear(); clearForm(); showToast();
+    }
+  })();
+
   $('#year').textContent = new Date().getFullYear();
   window.__siteReady = true;
 })();

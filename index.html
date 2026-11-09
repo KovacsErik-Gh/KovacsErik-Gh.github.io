@@ -120,12 +120,17 @@
         <p class="statement" data-reveal>I enjoy turning real problems into working software, whether that means training a vision model, tuning a controller, or sitting down with users to find out what they need.</p>
         <p class="body" data-reveal style="--d:.08s">I'm a 4th-year student at the Faculty of Automation and Computer Science in Cluj-Napoca. That background gives me two habits: thinking in systems, with inputs, feedback and failure modes, and caring whether a thing actually works outside the notebook. This summer I took that into industry at Tenaris Silcotub. Next, I want to keep learning alongside experienced engineers on real-world projects.</p>
       </div>
-      <dl class="facts" data-reveal style="--d:.12s">
+      <div class="about__side" data-reveal style="--d:.12s">
+        <figure class="portrait">
+          <img src="assets/img/erik.jpg" width="900" height="900" loading="lazy" alt="Portrait of Erik Kovács, smiling, wearing a dark shirt">
+        </figure>
+      <dl class="facts">
         <div><dt>Studying</dt><dd>BSc, Automation &amp; Computer Science, UTCN</dd></div>
         <div><dt>Graduating</dt><dd>2027 (expected)</dd></div>
         <div><dt>Based in</dt><dd>Zalău, Sălaj, Romania</dd></div>
         <div><dt>Interested in</dt><dd>Computer vision, control systems, process automation, full-stack software</dd></div>
       </dl>
+      </div>
     </div>
     <ul class="stats">
       <li data-reveal><b data-count="90.71" data-suffix="%" data-decimals="2">90.71%</b><span>pixel accuracy across 12 segmentation classes</span></li>
@@ -315,16 +320,46 @@
   <section class="contact" id="contact">
     <p class="eyebrow" data-reveal>Contact</p>
     <h2 class="contact__title" data-reveal>Have a team I could learn from? Let's talk.</h2>
-    <div class="contact__mail" data-reveal>
-      <a href="mailto:kovacs.erik171004@gmail.com">kovacs.erik171004@gmail.com</a>
-      <button class="chip-btn" id="copyMail" type="button" data-mail="kovacs.erik171004@gmail.com">Copy</button>
+    <div class="contact__grid">
+      <div class="contact__direct">
+        <p class="contact__label" data-reveal>Prefer to reach out directly?</p>
+        <div class="contact__mail" data-reveal>
+          <a href="mailto:kovacs.erik171004@gmail.com">kovacs.erik171004@gmail.com</a>
+          <button class="chip-btn" id="copyMail" type="button" data-mail="kovacs.erik171004@gmail.com">Copy</button>
+        </div>
+        <p class="contact__phone" data-reveal><a href="tel:+40754931342">+40 754 931 342</a><span>Zalău, Romania</span></p>
+        <ul class="contact__links" data-reveal>
+          <li><a href="https://www.linkedin.com/in/kovacs-erik-598691397" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
+          <li><a href="https://github.com/KovacsErik-Gh" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
+          <li><a href="assets/Erik-Kovacs-CV.pdf" target="_blank" rel="noopener">Download CV <span aria-hidden="true">↗</span></a></li>
+        </ul>
+      </div>
+
+      <div class="panel form-panel" data-reveal style="--d:.1s">
+        <div class="panel-head"><span>Send me a message</span><span>goes straight to my inbox</span></div>
+        <form class="form" id="contactForm" novalidate>
+          <div class="field">
+            <label for="cEmail">Company email</label>
+            <input id="cEmail" name="email" type="email" autocomplete="email" maxlength="150" placeholder="name@company.com" required aria-describedby="cEmailErr">
+            <p class="field__err" id="cEmailErr" role="alert"></p>
+          </div>
+          <div class="field">
+            <label for="cMsg">Message <output class="count" id="cCount" for="cMsg">0 / 1500</output></label>
+            <textarea id="cMsg" name="message" rows="5" maxlength="1500" required aria-describedby="cMsgErr"></textarea>
+            <p class="field__err" id="cMsgErr" role="alert"></p>
+          </div>
+
+          <!-- Honeypot: invisible to people, bots fill it in -->
+          <div class="hp" aria-hidden="true"><label>Leave this empty <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off"></label></div>
+
+          <div class="form__foot">
+            <button class="btn btn--primary" id="cSend" type="submit"><span class="btn__label">Send message</span> <span aria-hidden="true">→</span></button>
+            <p class="form__note">I'll only use your details to reply to you.</p>
+          </div>
+          <p class="form__status" id="cStatus" role="status" aria-live="polite" hidden></p>
+        </form>
+      </div>
     </div>
-    <p class="contact__phone" data-reveal><a href="tel:+40754931342">+40 754 931 342</a><span>Zalău, Romania</span></p>
-    <ul class="contact__links" data-reveal>
-      <li><a href="https://www.linkedin.com/in/kovacs-erik-598691397" target="_blank" rel="noopener">LinkedIn <span aria-hidden="true">↗</span></a></li>
-      <li><a href="https://github.com/KovacsErik-Gh" target="_blank" rel="noopener">GitHub <span aria-hidden="true">↗</span></a></li>
-      <li><a href="assets/Erik-Kovacs-CV.pdf" target="_blank" rel="noopener">Download CV <span aria-hidden="true">↗</span></a></li>
-    </ul>
   </section>
 </main>
 
@@ -332,6 +367,12 @@
   <span>© <span id="year">2026</span> Erik Kovács</span>
   <a href="#top">Back to top <span aria-hidden="true">↑</span></a>
 </footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden>
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 12.500 9.500 18 20 6.500" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg>
+  <div><b>Message sent successfully</b><p>Thank you! I'll reply to your email as soon as I can.</p></div>
+  <button type="button" id="toastClose" aria-label="Dismiss notification">×</button>
+</div>
 
 <script src="main.js"></script>
 </body>

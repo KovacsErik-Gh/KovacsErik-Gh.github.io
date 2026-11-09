@@ -16,3 +16,10 @@ dist/
 .vscode/
 .idea/
 *.log
+
+# Original full-size photo (the site uses the optimised copy in assets/img/)
+poza.jpg
+
+# Personal documents (the site serves its own copy of the CV from assets/)
+cover_letter_erik_kovacs.pdf
+cv_erik_kovacs.pdf
