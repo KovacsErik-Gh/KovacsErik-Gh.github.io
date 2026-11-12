@@ -99,7 +99,7 @@
     const next = root.dataset.theme === 'light' ? 'dark' : 'light';
     const apply = () => {
       root.dataset.theme = next;
-      $('meta[name="theme-color"]').content = next === 'light' ? '#f2f3ec' : '#0d0f0e';
+      $('meta[name="theme-color"]').content = next === 'light' ? '#f6f2ea' : '#171513';
       try { localStorage.setItem('theme', next); } catch (err) { /* private mode */ }
       themeListeners.forEach((fn) => fn());
     };
@@ -239,7 +239,7 @@
         ctx.fillStyle = '#ff3b30'; ctx.shadowColor = '#ff3b30'; ctx.shadowBlur = 16;
         ctx.beginPath(); ctx.arc(x, y + .35 * sc, .2 * sc, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
         ctx.strokeStyle = '#3fe07a'; ctx.lineWidth = 1.5; ctx.strokeRect(x - .5 * sc, y - .2 * sc, sc, 1.9 * sc);
-        ctx.fillStyle = '#3fe07a'; ctx.font = '500 11px "IBM Plex Mono", monospace';
+        ctx.fillStyle = '#3fe07a'; ctx.font = '500 11px "Hanken Grotesk", sans-serif';
         ctx.fillText('traffic light', x - .5 * sc, y - .2 * sc - 5);
       }
 
@@ -262,7 +262,7 @@
           ctx.strokeStyle = col; ctx.lineWidth = 1.5;
           ctx.strokeRect(x - pad, y - pad, w + pad * 2, h + pad * 2);
           const tag = `car ${Math.round(s.conf * 100)}%`;
-          ctx.font = '500 11px "IBM Plex Mono", monospace';
+          ctx.font = '500 11px "Hanken Grotesk", sans-serif';
           const tw = ctx.measureText(tag).width + 8;
           ctx.fillStyle = col; ctx.fillRect(x - pad - .75, y - pad - 16, tw, 16);
           ctx.fillStyle = '#000'; ctx.fillText(tag, x - pad + 3, y - pad - 4);
@@ -419,7 +419,7 @@
       const py = (y) => H - pad.b - (y / YMAX) * (H - pad.t - pad.b);
       ctx.clearRect(0, 0, W, H);
 
-      ctx.font = '400 11px "IBM Plex Mono", monospace'; ctx.lineWidth = 1;
+      ctx.font = '400 11px "Hanken Grotesk", sans-serif'; ctx.lineWidth = 1;
       ctx.strokeStyle = line; ctx.fillStyle = muted;
       ctx.beginPath();
       for (let t = 0; t <= T; t++) { ctx.moveTo(px(t), pad.t); ctx.lineTo(px(t), H - pad.b); ctx.fillText(t + (t === T ? ' s' : ''), px(t) - (t === T ? 20 : 3), H - 7); }
