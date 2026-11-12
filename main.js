@@ -189,18 +189,18 @@
       const yAt = (d) => hz + A / d;
       const xAt = (lat, d) => cx + lat * m / d;
 
-      ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#1d1b18'; ctx.fillRect(0, 0, W, H);
       if (wx.sky) { ctx.fillStyle = `rgba(150,160,170,${wx.sky})`; ctx.fillRect(0, 0, W, hz); }
 
-      // Horizon: buildings (grey) and vegetation (olive) in segmentation colours.
+      // Horizon: buildings (grey) and vegetation (sage), in a muted palette.
       const drift = (s.odo * .0012) % 1;
       skyline.forEach((b) => {
         const x = ((b.x - drift + 1) % 1) * W * 1.1 - W * .05;
         if (b.tree) {
-          ctx.fillStyle = '#5f7f24';
+          ctx.fillStyle = '#5c6a4e';
           ctx.beginPath(); ctx.ellipse(x, hz, b.w * W * .7, b.h * H * .42, 0, Math.PI, 0); ctx.fill();
         } else {
-          ctx.fillStyle = '#464646';
+          ctx.fillStyle = '#403d38';
           ctx.fillRect(x, hz - b.h * H, b.w * W, b.h * H);
         }
       });
@@ -208,13 +208,13 @@
       // Ground: sidewalk, road.
       const poly = (pts, c) => { ctx.fillStyle = c; ctx.beginPath(); pts.forEach((p, i) => (i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]))); ctx.closePath(); ctx.fill(); };
       const NEAR = 4, FAR = 400;
-      ctx.fillStyle = '#26170f'; ctx.fillRect(0, hz, W, H - hz);
-      poly([[xAt(-10, NEAR), yAt(NEAR)], [xAt(-10, FAR), yAt(FAR)], [xAt(10, FAR), yAt(FAR)], [xAt(10, NEAR), yAt(NEAR)]], '#c81fbe');
-      poly([[xAt(-7, NEAR), yAt(NEAR)], [xAt(-7, FAR), yAt(FAR)], [xAt(7, FAR), yAt(FAR)], [xAt(7, NEAR), yAt(NEAR)]], '#6f3a70');
+      ctx.fillStyle = '#26211c'; ctx.fillRect(0, hz, W, H - hz);
+      poly([[xAt(-10, NEAR), yAt(NEAR)], [xAt(-10, FAR), yAt(FAR)], [xAt(10, FAR), yAt(FAR)], [xAt(10, NEAR), yAt(NEAR)]], '#8f7482');
+      poly([[xAt(-7, NEAR), yAt(NEAR)], [xAt(-7, FAR), yAt(FAR)], [xAt(7, FAR), yAt(FAR)], [xAt(7, NEAR), yAt(NEAR)]], '#4e4348');
 
-      // Lane markings (CARLA road-line green), moving with the car.
-      ctx.globalAlpha = .95;
-      const strip = (lat, d1, d2, hw = .09) => poly([[xAt(lat - hw, d1), yAt(d1)], [xAt(lat - hw, d2), yAt(d2)], [xAt(lat + hw, d2), yAt(d2)], [xAt(lat + hw, d1), yAt(d1)]], '#b4f03c');
+      // Lane markings, moving with the car.
+      ctx.globalAlpha = .8;
+      const strip = (lat, d1, d2, hw = .09) => poly([[xAt(lat - hw, d1), yAt(d1)], [xAt(lat - hw, d2), yAt(d2)], [xAt(lat + hw, d2), yAt(d2)], [xAt(lat + hw, d1), yAt(d1)]], '#d8cfb6');
       [-6.6, 6.6].forEach((l) => strip(l, NEAR, FAR, .07));
       const period = 9, off = s.odo % period;
       for (let z = period - off; z < 150; z += period) {
@@ -226,7 +226,7 @@
 
       // Roadside poles passing the camera.
       const poleP = 22, poleOff = s.odo % poleP;
-      ctx.strokeStyle = '#b9b9b9';
+      ctx.strokeStyle = '#8a8478';
       for (let z = 110 - ((110 + poleOff) % poleP); z > 5; z -= poleP) {
         const sc = m / z; ctx.lineWidth = Math.max(.6, .16 * sc);
         [-8, 8].forEach((l) => { const x = xAt(l, z), y = yAt(z); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 6.5 * sc); ctx.stroke(); });
@@ -235,11 +235,11 @@
       // Traffic light when the sign layer is engaged.
       if (s.red > 0) {
         const z = 30, sc = m / z, x = xAt(-3.6, z), y = yAt(z) - 5.5 * sc;
-        ctx.fillStyle = '#e8c21a'; ctx.fillRect(x - .28 * sc, y, .56 * sc, 1.5 * sc);
-        ctx.fillStyle = '#ff3b30'; ctx.shadowColor = '#ff3b30'; ctx.shadowBlur = 16;
-        ctx.beginPath(); ctx.arc(x, y + .35 * sc, .2 * sc, 0, 7); ctx.fill(); ctx.shadowBlur = 0;
-        ctx.strokeStyle = '#3fe07a'; ctx.lineWidth = 1.5; ctx.strokeRect(x - .5 * sc, y - .2 * sc, sc, 1.9 * sc);
-        ctx.fillStyle = '#3fe07a'; ctx.font = '500 11px "Hanken Grotesk", sans-serif';
+        ctx.fillStyle = '#b89a55'; ctx.fillRect(x - .28 * sc, y, .56 * sc, 1.5 * sc);
+        ctx.fillStyle = '#d4705f';
+        ctx.beginPath(); ctx.arc(x, y + .35 * sc, .2 * sc, 0, 7); ctx.fill();
+        ctx.strokeStyle = '#a9c2a0'; ctx.lineWidth = 1.5; ctx.strokeRect(x - .5 * sc, y - .2 * sc, sc, 1.9 * sc);
+        ctx.fillStyle = '#a9c2a0'; ctx.font = '500 11px "Hanken Grotesk", sans-serif';
         ctx.fillText('traffic light', x - .5 * sc, y - .2 * sc - 5);
       }
 
@@ -247,25 +247,23 @@
       if (s.d < 90) {
         const sc = m / s.d, w = 1.8 * sc, h = w / 1.2, x = cx - w / 2, y = yAt(s.d) - h;
         const braking = s.lead < s.v - 1;
-        ctx.fillStyle = '#1b2dbd';
+        ctx.fillStyle = '#4d5d82';
         ctx.beginPath(); ctx.roundRect(x, y + h * .36, w, h * .56, w * .05); ctx.fill();
         ctx.beginPath(); ctx.roundRect(x + w * .13, y, w * .74, h * .42, [w * .09, w * .09, 0, 0]); ctx.fill();
-        ctx.fillStyle = '#0a1036'; ctx.fillRect(x + w * .2, y + h * .07, w * .6, h * .28);
-        ctx.fillStyle = '#05060a'; ctx.fillRect(x + w * .07, y + h * .9, w * .18, h * .1); ctx.fillRect(x + w * .75, y + h * .9, w * .18, h * .1);
-        ctx.fillStyle = braking ? '#ff3b30' : '#7e1711';
-        if (braking) { ctx.shadowColor = '#ff3b30'; ctx.shadowBlur = 14; }
+        ctx.fillStyle = '#272d44'; ctx.fillRect(x + w * .2, y + h * .07, w * .6, h * .28);
+        ctx.fillStyle = '#12110f'; ctx.fillRect(x + w * .07, y + h * .9, w * .18, h * .1); ctx.fillRect(x + w * .75, y + h * .9, w * .18, h * .1);
+        ctx.fillStyle = braking ? '#d4705f' : '#6e342d';
         ctx.fillRect(x + w * .05, y + h * .46, w * .17, h * .09); ctx.fillRect(x + w * .78, y + h * .46, w * .17, h * .09);
-        ctx.shadowBlur = 0;
-
+        
         if (s.d < 60) {
-          const col = s.level === 1 ? '#ff6b5e' : '#ff4fd8', pad = 3;
+          const col = s.level === 1 ? '#e28a78' : '#d9b3a0', pad = 3;
           ctx.strokeStyle = col; ctx.lineWidth = 1.5;
           ctx.strokeRect(x - pad, y - pad, w + pad * 2, h + pad * 2);
           const tag = `car ${Math.round(s.conf * 100)}%`;
           ctx.font = '500 11px "Hanken Grotesk", sans-serif';
           const tw = ctx.measureText(tag).width + 8;
           ctx.fillStyle = col; ctx.fillRect(x - pad - .75, y - pad - 16, tw, 16);
-          ctx.fillStyle = '#000'; ctx.fillText(tag, x - pad + 3, y - pad - 4);
+          ctx.fillStyle = '#1a1815'; ctx.fillText(tag, x - pad + 3, y - pad - 4);
         }
       }
 
